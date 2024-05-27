@@ -85,22 +85,6 @@ situacao_empresa=st.sidebar.multiselect(
     
 #)
 
-st.sidebar.header("Please Filter Here:")
-atividade_principal=st.sidebar.multiselect(
-    "Selecione a Atividade Principal:",
-    options=df["atividade_principal"].unique(),
-    default=df["atividade_principal"].unique()
-    
-)
-
-st.sidebar.header("Please Filter Here:")
-incomodo=st.sidebar.multiselect(
-    "Selecione o incomodo:",
-    options=df["incomodo"].unique(),
-    default=df["incomodo"].unique()
-    
-)
-
 df_selection = df.query(
     #'razao_social == @__pd_eval_local_razao_social and '
     #'nome_fantasia == @__pd_eval_local_nome_fantasia and '
@@ -109,8 +93,6 @@ df_selection = df.query(
     #'data_abertura_empresa == @__pd_eval_local_data_abertura_empresa and '
     #'data_encerramento == @__pd_eval_local_data_encerramento and '
     #'desc_atividade == @__pd_eval_local_desc_atividade and '
-    'atividade_principal == @__pd_eval_local_atividade_principal and '
-    'incomodo == @__pd_eval_local_incomodo'
 )
 
 
