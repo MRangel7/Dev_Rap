@@ -8,29 +8,33 @@ st.set_page_config(page_title="Empresas_Recife",
                    page_icon="office_building",
                    layout="wide")
 
-df = pd.read_excel(
-        io='empresas_combined.xlsx',
-        engine='openpyxl',
-        sheet_name='Sheet1',
-        nrows=14375,  # Limite o número de linhas se possível
-    )
+# Carregar dados dos dois arquivos Excel
+df1 = pd.read_excel(
+    io='seu_primeiro_arquivo.xlsx',
+    engine='openpyxl',
+    sheet_name='Sheet1'
+)
 
-#se abilitar esse "#st.dataframe(df)" vai ficar com 2 tabelas, sendo
-#essa a 1 q o filtro n vai pegar nela
+df2 = pd.read_excel(
+    io='seu_segundo_arquivo.xlsx',
+    engine='openpyxl',
+    sheet_name='Sheet1'
+)
 
-#st.dataframe(df)
-
-
-
-
-
-
+# Combinar os DataFrames
+df = pd.concat([df1, df2], ignore_index=True)
 
 
+# Verificação de execução
+print("Código carregado e executado.")
 
-#sidebar
+# Remover colunas indesejadas
+df = df.drop(columns=["incomodo", "atividade_principal"], errors='ignore')
 
-#st.sidebar.header("Please Filter Here:")
+# Filtros da barra lateral
+st.sidebar.header("Filtre os dados aqui:")
+
+
 #razao_social=st.sidebar.multiselect(
     #"Selecione o Nome Social:",
     #options=df["razao_social"].unique(),
@@ -38,7 +42,6 @@ df = pd.read_excel(
     
 #)
 
-#st.sidebar.header("Please Filter Here:")
 #nome_fantasia=st.sidebar.multiselect(
     #"Selecione o Nome Fantasia:",
     #options=df["nome_fantasia"].unique(),
@@ -46,15 +49,13 @@ df = pd.read_excel(
     
 #)
 
-#st.sidebar.header("Please Filter Here:")
-#nome_bairro=st.sidebar.multiselect(
-    #"Selecione o Bairro:",
-    #options=df["nome_bairro"].unique(),
-    #default=df["nome_bairro"].unique()
+nome_bairro=st.sidebar.multiselect(
+    "Selecione o Bairro:",
+    options=df["nome_bairro"].unique(),
+    default=df["nome_bairro"].unique()
     
-#)
+)
 
-st.sidebar.header("Please Filter Here:")
 situacao_empresa=st.sidebar.multiselect(
     "Selecione a Situação da Empresa:",
     options=df["situacao_empresa"].unique(),
@@ -62,7 +63,6 @@ situacao_empresa=st.sidebar.multiselect(
     
 )
 
-#st.sidebar.header("Please Filter Here:")
 #data_abertura_empresa=st.sidebar.multiselect(
     #"Selecione a Data de abertura:",
     #options=df["data_abertura_empresa"].unique(),
@@ -70,14 +70,13 @@ situacao_empresa=st.sidebar.multiselect(
     
 #)
 
-#st.sidebar.header("Please Filter Here:")
 #data_encerramento=st.sidebar.multiselect(
     #"Selecione a Data de abertura:",
     #options=df["data_encerramento"].unique(),
     #default=df["data_encerramento"].unique()
     
 #)
-#st.sidebar.header("Please Filter Here:")
+
 #desc_atividade=st.sidebar.multiselect(
     #"Selecione Descreva a Atividade da Empresa:",
     #options=df["desc_atividade"].unique(),
@@ -85,15 +84,12 @@ situacao_empresa=st.sidebar.multiselect(
     
 #)
 
-df_selection = df.query(
-    #'razao_social == @__pd_eval_local_razao_social and '
-    #'nome_fantasia == @__pd_eval_local_nome_fantasia and '
-    #'nome_bairro == @__pd_eval_local_nome_bairro and '
-    'situacao_empresa == @__pd_eval_local_situacao_empresa and '
-    #'data_abertura_empresa == @__pd_eval_local_data_abertura_empresa and '
-    #'data_encerramento == @__pd_eval_local_data_encerramento and '
-    #'desc_atividade == @__pd_eval_local_desc_atividade and '
-)
+# Aplicar filtros
+df_selection = df[
+    (df["situacao_empresa"].isin(situacao_empresa)) &
+    (df["nome_bairro"].isin(nome_bairro))
+]
 
-
+# Exibir DataFrame filtrado
 st.dataframe(df_selection)
+
